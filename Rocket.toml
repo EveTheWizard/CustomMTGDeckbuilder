@@ -1,0 +1,6 @@
+[default.databases]
+postgres_db = { url = "env:DATABASE_URL" }
+
+[debug]
+address = "127.0.0.1"
+port = 8000
