@@ -1,6 +1,39 @@
 import React, { useState, useEffect } from "react";
 
-const themes = ["light", "dark", "cupcake", "synthwave", "cyberpunk", "emerald"]; // Available themes
+const themes = [
+    "light",
+    "dark",
+    "cupcake",
+    "bumblebee",
+    "emerald",
+    "corporate",
+    "synthwave",
+    "retro",
+    "cyberpunk",
+    "valentine",
+    "halloween",
+    "garden",
+    "forest",
+    "aqua",
+    "lofi",
+    "pastel",
+    "fantasy",
+    "wireframe",
+    "black",
+    "luxury",
+    "dracula",
+    "cmyk",
+    "autumn",
+    "business",
+    "acid",
+    "lemonade",
+    "night",
+    "coffee",
+    "winter",
+    "dim",
+    "nord",
+    "sunset",
+]; // Available themes
 
 const PersistentThemeSwitcher = () => {
     const [currentTheme, setCurrentTheme] = useState("light"); // Default theme
@@ -46,7 +79,7 @@ const PersistentThemeSwitcher = () => {
 
             <ul
                 tabIndex={0}
-                className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+                className="dropdown-content menu p-2 shadow bg-base-100 text-base-content rounded-box w-52"
             >
                 {themes.map((theme) => (
                     <li key={theme}>

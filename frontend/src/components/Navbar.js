@@ -14,6 +14,7 @@ const Navbar = () => {
                 <a href="/decks" className="navbar__link">Decks</a>
                 <a href="/cardlist" className="navbar__link">Cardlist</a>
                 <a href="/events" className="navbar__link">Events</a>
+                <a href="/downloads" className="navbar__link">Downloads</a>
                 <a href="/login" className="navbar__link">Login</a>
                 <a href="/register" className="navbar__link">Register</a>
             </div>

@@ -1,8 +1,13 @@
 mod datamodels;
+mod routes;
+mod utils;
+mod db;
+mod schema;
 
 #[macro_use]
 extern crate rocket;
 
+use dotenv::dotenv;
 use rocket::response::status;
 use rocket::http::Method;
 use rocket_db_pools::{sqlx, Database, Connection};
@@ -14,11 +19,8 @@ use serde::{Deserialize, Serialize};
 use sqlx::Acquire;
 use crate::datamodels::models::{Card, Deck, DeckCard};
 use rocket_cors::{AllowedHeaders, AllowedOrigins, CorsOptions};
-
-
-#[derive(Database)]
-#[database("postgres_db")]
-struct Postgres(sqlx::PgPool);
+use crate::db::connection::establish_connection;
+use crate::db::connection::Postgres;
 
 #[get("/")]
 fn index() -> &'static str {
@@ -44,6 +46,7 @@ async fn list_cards(mut conn: Connection<Postgres>) -> Result<Json<Vec<Card>>, r
 
 #[launch]
 fn rocket() -> _ {
+    dotenv().ok();
 
     let cors = CorsOptions {
         // Allow all origins
@@ -61,10 +64,12 @@ fn rocket() -> _ {
         .to_cors()
         .expect("Error creating CORS fairing");
 
+    let pool = establish_connection();
 
     rocket::build()
         .attach(Postgres::init())
-        .mount("/", routes![index, list_cards])
+        .manage(pool)
+        .mount("/", routes![index, list_cards, routes::auth::register, routes::auth::login],  )
         .attach(cors)
 }
 
