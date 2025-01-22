@@ -1,0 +1,70 @@
+mod datamodels;
+
+#[macro_use]
+extern crate rocket;
+
+use rocket::response::status;
+use rocket::http::Method;
+use rocket_db_pools::{sqlx, Database, Connection};
+//use rocket_contrib::json::Json;
+use rocket::serde::json::Json;
+//use rocket_db_pools::sqlx::types::Json;
+use rocket_db_pools::sqlx::query_as;
+use serde::{Deserialize, Serialize};
+use sqlx::Acquire;
+use crate::datamodels::models::{Card, Deck, DeckCard};
+use rocket_cors::{AllowedHeaders, AllowedOrigins, CorsOptions};
+
+
+#[derive(Database)]
+#[database("postgres_db")]
+struct Postgres(sqlx::PgPool);
+
+#[get("/")]
+fn index() -> &'static str {
+    "Welcome to the MTG Deckbuilder API!"
+}
+
+#[get("/cards")]
+async fn list_cards(mut conn: Connection<Postgres>) -> Result<Json<Vec<Card>>, rocket::http::Status> {
+    // Acquire the SQLx connection explicitly
+    let pg_conn = conn.acquire().await.map_err(|_| rocket::http::Status::InternalServerError)?;
+
+    // Use the acquired connection for the query
+    let result = sqlx::query_as!(
+    Card,
+    r#"SELECT id, name, mana_cost, card_type, oracle_text, power, toughness, rarity, set_code FROM cards"#)
+        .fetch_all(pg_conn) // Pass the acquired SQLx-compatible connection
+        .await
+        .map_err(|_| rocket::http::Status::InternalServerError)?;
+
+    Ok(Json(result))
+}
+
+
+#[launch]
+fn rocket() -> _ {
+
+    let cors = CorsOptions {
+        // Allow all origins
+        allowed_origins: AllowedOrigins::all(),
+        // Allow commonly used HTTP methods
+        allowed_methods: vec![Method::Get, Method::Post, Method::Patch, Method::Put, Method::Delete]
+            .into_iter()
+            .map(From::from)
+            .collect(),
+        // Allow the "Content-Type" header
+        allowed_headers: AllowedHeaders::some(&["Content-Type"]),
+        allow_credentials: true,
+        ..Default::default()
+    }
+        .to_cors()
+        .expect("Error creating CORS fairing");
+
+
+    rocket::build()
+        .attach(Postgres::init())
+        .mount("/", routes![index, list_cards])
+        .attach(cors)
+}
+
