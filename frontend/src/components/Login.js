@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
-function Register() {
+
+function Login() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -28,9 +29,16 @@ function Register() {
                 throw new Error(errorData.message || "Failed to register");
             }
 
+            const responseData = await response.json();
+            console.log(responseData);
 
-
-            setSuccessMessage("Login Successful!");
+            if (responseData.token) {
+                // Save token to localStorage or sessionStorage
+                localStorage.setItem("jwt", responseData.token);
+                setSuccessMessage("Login Successful!");
+            } else {
+                setErrorMessage("Missing token in response.");
+            }
         } catch (error) {
             setErrorMessage(error.message);
         }
@@ -86,4 +94,4 @@ function Register() {
     );
 }
 
-export default Register;
+export default Login;

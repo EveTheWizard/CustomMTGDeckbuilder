@@ -11,6 +11,7 @@ pub struct User {
     pub user_type: String,
     pub access_token: Option<String>,
     pub created_at: chrono::NaiveDateTime,
+    pub access_exp: Option<chrono::NaiveDateTime>,
     pub activated: bool,
 }
 
@@ -49,4 +50,5 @@ pub struct LoginResponse {
 pub(crate) struct Claims {
     pub(crate) sub: i32,                // Subject (User ID, for example)
     pub(crate) exp: usize,              // Expiration time (in seconds since epoch)
+    pub(crate) hash: String,
 }

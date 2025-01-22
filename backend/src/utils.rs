@@ -1,7 +1,9 @@
 use argon2::{password_hash::{SaltString, PasswordHasher, Error}, Argon2};
 use chrono::{Duration, Utc};
-use jsonwebtoken::{encode, EncodingKey, Header};
+use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, Validation};
 use crate::datamodels::users::Claims;
+use dotenv::dotenv;
+use std::env;
 
 #[derive(Debug)]
 pub enum JwtError {
@@ -31,7 +33,7 @@ pub(crate) fn hash_password(password: &str) -> Result<String, Error> {
     Ok(password_hash)
 }
 
-pub fn generate_jwt(user_id: i32) -> jsonwebtoken::errors::Result<String> {
+pub fn generate_jwt(user_id: i32, hash: String ) -> jsonwebtoken::errors::Result<String> {
     // Create the claims
     let expiration = Utc::now()
         .checked_add_signed(Duration::hours(24)) // Set token expiry to 24 hours
@@ -40,12 +42,30 @@ pub fn generate_jwt(user_id: i32) -> jsonwebtoken::errors::Result<String> {
 
     let claims = Claims {
         sub: user_id,       // Subject: user_id
+        hash: hash,
         exp: expiration as usize, // Expiration: now + 24 hours
     };
 
     // Define your secret key
-    let secret_key = "your_secret_key"; // Replace with a strong secret and keep it secure
+    let secret_key = get_secret_key().as_bytes(); // Replace with a strong secret and keep it secure
 
     // Encode the claims into a JWT
     encode(&Header::default(), &claims, &EncodingKey::from_secret(secret_key.as_ref()))
+}
+
+fn verify_jwt(token: &str) -> Result<TokenData<Claims>, jsonwebtoken::errors::Error> {
+    let key = get_secret_key().as_bytes(); // Use the same secret key used when signing the JWT
+    let validation = Validation::default(); // Validates `exp` by default
+    let token_data = decode::<Claims>(
+        token,
+        &DecodingKey::from_secret(key),
+        &validation,
+    )?;
+
+    Ok(token_data)
+}
+
+fn get_secret_key() -> String {
+    dotenv().ok(); // Load variables from .env file
+    env::var("JWT_SECRET").expect("JWT_SECRET must be set")
 }

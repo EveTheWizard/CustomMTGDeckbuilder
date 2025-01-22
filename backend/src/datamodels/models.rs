@@ -32,3 +32,4 @@ pub struct DeckCard {
     pub card_id: i32,  // Foreign key to the `cards` table
     pub quantity: i32, // Quantity of this card in the deck
 }
+

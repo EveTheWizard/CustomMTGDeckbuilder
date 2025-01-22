@@ -94,12 +94,13 @@ pub async fn login(
                     &parsed_hash,
                 ).is_ok() {
                     // Option 1: Return a JWT
-                    let jwt_token = generate_jwt(user.id).map_err(|_| {
+                    let jwt_token = generate_jwt(user.id, user.password_hash ).map_err(|_| {
                         status::Custom(
                             Status::InternalServerError,
                             Json(LoginResponse { message: "Failed to generate JWT".to_string(), status: "".to_string(), token: Option::from("".to_string()) }), // Replace with appropriate error response
                         )
                     })?;
+                    println!("JWT Token generated: {}", jwt_token);
                     return Ok(Json(LoginResponse { message: "Login successful".into(), status: "200 OK".to_string(), token: Some(jwt_token) }));
                 } else {
                     //Handle failed verify password
