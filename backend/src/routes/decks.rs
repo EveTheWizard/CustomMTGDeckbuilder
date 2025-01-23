@@ -293,14 +293,27 @@ pub async fn add_card(
                     deck_id,
                     payload.card_id
                 )
-                    .execute(pg_conn)
+                    .execute(&mut *pg_conn)
                     .await;
                 println!("Inserted into deck_cards");
 
                 // Check if the insertion was successful
                 if let Err(_) = insert_result {
-                    println!("Failed to insert into deck_cards");
-                    return Err(Status::InternalServerError); // Database error
+                    let update_result = sqlx::query!(
+                    r#"
+                    UPDATE deck_cards SET quantity = 1
+                    WHERE deck_id = $1 AND card_id = $2
+                    "#,
+                    deck_id,
+                    payload.card_id
+                )
+                        .execute(pg_conn)
+                        .await;
+
+                    if let Err(_) = insert_result {
+                        println!("Failed to insert into deck_cards");
+                        return Err(Status::InternalServerError); // Database error
+                    }
                 }
 
                 // Return success
@@ -319,7 +332,7 @@ pub async fn increment_card_quantity(
     deck_id: i32,
     card_id: i32,
     token: Option<Token<'_>>,
-) -> Result<Status, Status> {
+) -> Result<Json<Value>, Status> {
     let pg_conn = conn.acquire().await.map_err(|_| Status::InternalServerError)?;
 
     if let Some(token) = token {
@@ -340,7 +353,9 @@ pub async fn increment_card_quantity(
                     .await
                     .map_err(|_| Status::InternalServerError)?;
 
-                Ok(Status::Ok)
+                return Ok(Json(json!({
+                        "card_id": card_id,
+                    })))
             }
             Err(_) => Err(Status::Unauthorized),
         }

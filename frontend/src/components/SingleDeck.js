@@ -5,10 +5,11 @@ import CardDisplay from "./DeckCardDisplay";
 const SingleDeckViewer = () => {
     const { deckId } = useParams(); // Get `deckId` from the route URL (e.g., /decks/:deckId)
     const [deck, setDeck] = useState(null); // State for storing the deck data
-    const [mainboard, setMainboard] = useState(null); // State for storing the deck data
-    const [sideboard, setSideboard] = useState(null); // State for storing the deck data
+    const [mainboard, setMainboard] = useState([]); // State for storing the deck data
+    const [sideboard, setSideboard] = useState([]); // State for storing the deck data
     const [loading, setLoading] = useState(true); // State to track loading deck data
     const [error, setError] = useState(null); // State to track deck errors
+    const mainboardCount = mainboard.reduce((sum, card) => sum + card.quantity, 0);
 
     const [searchTerm, setSearchTerm] = useState(""); // State to store the search term
     const [searchResults, setSearchResults] = useState([]); // State to store search results
@@ -80,30 +81,71 @@ const SingleDeckViewer = () => {
         fetchCards();
     }, [searchTerm]);
 
-    const updateCardQuantity = async (cardId, increment) => {
+    const decrementCardQuantity = async (cardId, board, increment) => {
         try {
             const token = localStorage.getItem("jwt");
-            const response = await fetch(`http://localhost:8000/decks/${deckId}/updateCardQuantity`, {
-                method: "POST",
+            const response = await fetch(`http://localhost:8000/decks/${deckId}/cards/${cardId}/decrement`, {
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": token ? `Bearer ${token}` : "",
                 },
                 body: JSON.stringify({
-                    cardId,
-                    increment, // Boolean: true for +1, false for -1
                 }),
             });
 
             if (response.ok) {
-                const updatedCard = await response.json();
+                if (board === "mainboard") {
+                    setMainboard((prevMainboard) =>
+                        prevMainboard.map((card) =>
+                            card.card_id === cardId
+                                ? { ...card, quantity: card.quantity - 1 }
+                                : card
+                        ).filter((card) => card.quantity > 0));
+                } else {
+                    setSideboard((prevSideboard) =>
+                        prevSideboard.map((card) =>
+                            card.card_id === cardId
+                                ? { ...card, quantity: card.quantity - 1 }
+                                : card
+                        ).filter((card) => card.quantity > 0));
+                }
+            } else {
+                console.error("Failed to update card quantity");
+            }
+        } catch (err) {
+            console.error("Error updating card quantity:", err);
+        }
+    };
+    const incrementCardQuantity = async (cardId, board, increment) => {
+        try {
+            const token = localStorage.getItem("jwt");
+            const response = await fetch(`http://localhost:8000/decks/${deckId}/cards/${cardId}/increment`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token ? `Bearer ${token}` : "",
+                },
+                body: JSON.stringify({
+                }),
+            });
 
-                setDeck((prevDeck) => ({
-                    ...prevDeck,
-                    cards: prevDeck.cards.map((card) =>
-                        card.id === cardId ? { ...card, quantity: updatedCard.quantity } : card
-                    ),
-                }));
+            if (response.ok) {
+                if (board === "mainboard") {
+                    setMainboard((prevMainboard) =>
+                        prevMainboard.map((card) =>
+                            card.card_id === cardId
+                                ? { ...card, quantity: card.quantity + 1 }
+                                : card
+                        ).filter((card) => card.quantity > 0));
+                } else {
+                    setSideboard((prevSideboard) =>
+                        prevSideboard.map((card) =>
+                            card.card_id === cardId
+                                ? { ...card, quantity: card.quantity + 1 }
+                                : card
+                        ).filter((card) => card.quantity > 0));
+                }
             } else {
                 console.error("Failed to update card quantity");
             }
@@ -222,8 +264,8 @@ const SingleDeckViewer = () => {
 
                     <div className="card bg-base-200">
                         <div className="card-body">
-                            <h2 className="text-xl font-bold text-secondary">Mainboard</h2>
-                            <CardDisplay cards={mainboard} onIncrement={updateCardQuantity} />
+                            <h2 className="text-xl font-bold text-secondary">Mainboard - {mainboardCount} Cards</h2>
+                            <CardDisplay cards={mainboard} onIncrement={incrementCardQuantity} onDecrement={decrementCardQuantity} />
                         </div>
                     </div>
 
