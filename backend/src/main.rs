@@ -17,7 +17,8 @@ use rocket::serde::json::Json;
 use rocket_db_pools::sqlx::query_as;
 use serde::{Deserialize, Serialize};
 use sqlx::Acquire;
-use crate::datamodels::models::{Card, Deck, DeckCard};
+use crate::datamodels::models::{Card};
+use crate::datamodels::deck::{Deck, DeckCard};
 use rocket_cors::{AllowedHeaders, AllowedOrigins, CorsOptions};
 use crate::db::connection::establish_connection;
 use crate::db::connection::Postgres;
@@ -57,7 +58,7 @@ fn rocket() -> _ {
             .map(From::from)
             .collect(),
         // Allow the "Content-Type" header
-        allowed_headers: AllowedHeaders::some(&["Content-Type"]),
+        allowed_headers: AllowedHeaders::some(&["Content-Type", "Authorization"]),
         allow_credentials: true,
         ..Default::default()
     }
@@ -69,7 +70,8 @@ fn rocket() -> _ {
     rocket::build()
         .attach(Postgres::init())
         .manage(pool)
-        .mount("/", routes![index, list_cards, routes::auth::register, routes::auth::login],  )
+        .mount("/", routes![index, list_cards, routes::auth::register, routes::auth::login, routes::decks::list_decks,
+        routes::decks::get_single_deck, routes::decks::add_card, routes::decks::increment_card_quantity, routes::decks::decrement_card_quantity ],  )
         .attach(cors)
 }
 

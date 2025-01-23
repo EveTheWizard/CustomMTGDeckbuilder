@@ -17,19 +17,4 @@ pub struct Card {
     pub set_code: Option<String>,           // Card rarity (e.g., common, rare)
 }
 
-/// Represents a deck in your database
-#[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
-pub struct Deck {
-    pub id: i32,           // Primary key
-    pub name: String,      // Deck name
-    pub creator_id: i32,   // Foreign key to the `users` table
-}
-
-/// Represents the relationship between a deck and its cards
-#[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
-pub struct DeckCard {
-    pub deck_id: i32,  // Foreign key to the `decks` table
-    pub card_id: i32,  // Foreign key to the `cards` table
-    pub quantity: i32, // Quantity of this card in the deck
-}
 

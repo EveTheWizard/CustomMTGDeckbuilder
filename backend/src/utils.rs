@@ -1,9 +1,10 @@
 use argon2::{password_hash::{SaltString, PasswordHasher, Error}, Argon2};
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, Validation};
-use crate::datamodels::users::Claims;
+use crate::datamodels::users::{Claims, Token};
 use dotenv::dotenv;
 use std::env;
+use rocket::http::Status;
 
 #[derive(Debug)]
 pub enum JwtError {
@@ -47,25 +48,27 @@ pub fn generate_jwt(user_id: i32, hash: String ) -> jsonwebtoken::errors::Result
     };
 
     // Define your secret key
-    let secret_key = get_secret_key().as_bytes(); // Replace with a strong secret and keep it secure
+    let binding = get_secret_key().clone();
+    let secret_key = binding.as_bytes(); // Replace with a strong secret and keep it secure
 
     // Encode the claims into a JWT
     encode(&Header::default(), &claims, &EncodingKey::from_secret(secret_key.as_ref()))
 }
 
-fn verify_jwt(token: &str) -> Result<TokenData<Claims>, jsonwebtoken::errors::Error> {
-    let key = get_secret_key().as_bytes(); // Use the same secret key used when signing the JWT
-    let validation = Validation::default(); // Validates `exp` by default
-    let token_data = decode::<Claims>(
-        token,
-        &DecodingKey::from_secret(key),
-        &validation,
-    )?;
-
-    Ok(token_data)
+pub fn verify_jwt(token: Token) -> Result<Claims, Status, > {
+    let binding = get_secret_key().clone();
+    let key = binding.as_bytes(); // Use the same secret key used when signing the JWT
+    match decode::<Claims>(
+        token.token,
+        &DecodingKey::from_secret(key), // Replace with your JWT secret
+        &Validation::default(),
+    ) {
+        Ok(decoded_token) => Ok(decoded_token.claims), // Return the validated claims
+        Err(_) => Err(Status::Unauthorized),          // Return Unauthorized if invalid
+    }
 }
 
 fn get_secret_key() -> String {
-    dotenv().ok(); // Load variables from .env file
+    //dotenv().ok(); // Load variables from .env file
     env::var("JWT_SECRET").expect("JWT_SECRET must be set")
 }

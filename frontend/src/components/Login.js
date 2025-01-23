@@ -1,12 +1,15 @@
 import React, { useState } from "react";
+import {useNavigate} from "react-router-dom";
 
 
-function Login() {
+function Login({ setIsAuthenticated }) {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const navigate = useNavigate();
+
 
     const handleLogin = async (event) => {
         event.preventDefault();
@@ -35,7 +38,9 @@ function Login() {
             if (responseData.token) {
                 // Save token to localStorage or sessionStorage
                 localStorage.setItem("jwt", responseData.token);
+                setIsAuthenticated(true);
                 setSuccessMessage("Login Successful!");
+                navigate("/dashboard");
             } else {
                 setErrorMessage("Missing token in response.");
             }
