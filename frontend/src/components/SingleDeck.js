@@ -10,10 +10,21 @@ const SingleDeckViewer = () => {
     const [loading, setLoading] = useState(true); // State to track loading deck data
     const [error, setError] = useState(null); // State to track deck errors
     const mainboardCount = mainboard.reduce((sum, card) => sum + card.quantity, 0);
+    const [selectedImage, setSelectedImage] = useState(null); // State to track the currently selected image for modal
 
     const [searchTerm, setSearchTerm] = useState(""); // State to store the search term
     const [searchResults, setSearchResults] = useState([]); // State to store search results
     const [adding, setAdding] = useState(false); // State to track addition status
+
+    const handleViewClick = (imageSrc) => {
+        setSelectedImage(imageSrc);
+    };
+
+    // Handle closing the modal
+    const handleCloseModal = () => {
+        setSelectedImage(null);
+    };
+
 
     // Fetch the current deck details
     useEffect(() => {
@@ -60,7 +71,7 @@ const SingleDeckViewer = () => {
 
             try {
                 const token = localStorage.getItem("jwt");
-                const response = await fetch(`http://localhost:8000/cards?search=${searchTerm}`, {
+                const response = await fetch(`http://localhost:8000/cards?name=${searchTerm}`, {
                     method: "GET",
                     headers: {
                         "Authorization": token ? `Bearer ${token}` : "", // Add JWT token
@@ -129,12 +140,16 @@ const SingleDeckViewer = () => {
                 body: JSON.stringify({
                 }),
             });
-
+            console.log("Before Response:");
+            console.log(response);
             if (response.ok) {
+                console.log("After Response:");
                 if (board === "mainboard") {
+                    console.log("Incrementing mainboard card quantity");
+                    console.log(mainboard)
                     setMainboard((prevMainboard) =>
                         prevMainboard.map((card) =>
-                            card.card_id === cardId
+                            card.card_id === cardId || card.id === cardId
                                 ? { ...card, quantity: card.quantity + 1 }
                                 : card
                         ).filter((card) => card.quantity > 0));
@@ -186,6 +201,8 @@ const SingleDeckViewer = () => {
 
                     if (existingCard) {
                         // If the card exists, increment its quantity
+                        card.card_name = card.name;
+                        card.card_id = card.id;
                         return prevMainboard.map((c) =>
                             c.id === card.id
                                 ? { ...c, quantity: c.quantity + 1 } // Update quantity
@@ -193,6 +210,8 @@ const SingleDeckViewer = () => {
                         );
                     } else {
                         card.card_name = card.name;
+                        card.board = "mainboard";
+                        card.card_id = card.id;
                         // If the card does not exist, add it to the `mainboard`
                         return [...prevMainboard, { ...card, quantity: 1 }];
                     }
@@ -232,51 +251,95 @@ const SingleDeckViewer = () => {
 
     return (
         <div className="min-h-screen bg-base-200 px-6 py-8">
-            <div className="max-w-4xl mx-auto card bg-base-100 shadow-xl">
-                {/* Deck Info */}
-                <div className="card-body">
-                    <h1 className="text-3xl font-bold text-primary">{deck.name}</h1>
-                    <p className="text-base-content mt-4">{deck.description}</p>
-
-                    {/* Card Search & Add Section */}
-                    <div className="mt-8">
-                        <h2 className="text-xl font-bold text-secondary">Add Cards to Deck:</h2>
-                        <input
-                            type="text"
-                            placeholder="Search for cards..."
-                            className="input input-bordered w-full mt-4"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        <ul className="mt-2 bg-base-100 rounded-lg shadow-md max-h-80 overflow-y-auto">
-                            {searchResults.map((card) => (
-                                <li
-                                    key={card.id}
-                                    className="flex items-center justify-between px-4 py-2 hover:bg-base-200 cursor-pointer"
-                                    onClick={() => addCardToDeck(card)}
-                                >
-                                    <span>{card.name}</span>
-                                    {adding && <span className="loading loading-spinner"></span>}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div className="card bg-base-200">
+            <div className="flex flex-row items-stretch gap-1">
+                <div className="flex-1 w-full align-stretch">
+                    <div className="max-w-4xl mx-auto card bg-base-100 shadow-xl h-full">
                         <div className="card-body">
-                            <h2 className="text-xl font-bold text-secondary">Mainboard - {mainboardCount} Cards</h2>
-                            <CardDisplay cards={mainboard} onIncrement={incrementCardQuantity} onDecrement={decrementCardQuantity} />
+                            <h1 className="text-3xl font-bold text-primary">Preview</h1>
+                            {selectedImage && (
+                                <div
+                                    className="flex justify-center items-center z-50 mt-10 mb-10"
+                                    onClick={handleCloseModal} // Close modal when clicking the background
+                                >
+                                    <div
+                                        className="m-2 rounded-lg relative"
+                                        onClick={(e) => e.stopPropagation()} // Prevent modal close when clicking inside it
+                                    >
+                                        {/* Close (X) Button */}
+                                        <button
+                                            className="absolute top-5 right-6 text-gray-600"
+                                            onClick={handleCloseModal}
+                                        >
+                                            ✖
+                                        </button>
+
+                                        {/* Display the Image */}
+                                        <img
+                                            src={selectedImage}
+                                            alt={selectedImage}
+                                            className="max-w-full h-[80"
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
+                </div>
+                <div className="flex-[2] w-full">
+                    <div className="max-w-4xl mx-auto card bg-base-100 shadow-xl">
+                        {/* Deck Info */}
+                        <div className="card-body">
+                            <h1 className="text-3xl font-bold text-primary">{deck.name}</h1>
+                            <p className="text-base-content mt-4">{deck.description}</p>
 
-                    {/* Action Buttons */}
-                    <div className="mt-8 flex justify-start">
-                        <button
-                            onClick={() => window.history.back()} // Return to the previous page
-                            className="btn btn-secondary"
-                        >
-                            Go Back
-                        </button>
+                            {/* Card Search & Add Section */}
+                            <div className="mt-8">
+                                <h2 className="text-xl font-bold text-secondary">Add Cards to Deck:</h2>
+                                <input
+                                    type="text"
+                                    placeholder="Search for cards..."
+                                    className="input input-bordered w-full mt-4"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                                <ul className="mt-2 bg-base-100 rounded-lg shadow-md max-h-80 overflow-y-auto">
+                                    {searchResults.map((card) => (
+                                        <li
+                                            key={card.id}
+                                            className="flex items-center justify-between px-4 py-2 hover:bg-base-200 cursor-pointer"
+                                            onClick={() => addCardToDeck(card)}
+                                        >
+                                            <span>{card.name}</span>
+                                            {adding && <span className="loading loading-spinner"></span>}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            <div className="card bg-base-200">
+                                <div className="card-body">
+                                    <h2 className="text-xl font-bold text-secondary">Mainboard - {mainboardCount} Cards</h2>
+                                    <CardDisplay cards={mainboard} onIncrement={incrementCardQuantity} onDecrement={decrementCardQuantity} setImage={setSelectedImage} />
+                                </div>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="mt-8 flex justify-start">
+                                <button
+                                    onClick={() => window.history.back()} // Return to the previous page
+                                    className="btn btn-secondary"
+                                >
+                                    Go Back
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="flex-1 w-full">
+                <div className="mt-2 card bg-base-100 shadow-xl w-full h-full">
+                    <div className="card-body">
+                        <h1 className="text-3xl font-bold text-primary text-center">Deck Information</h1>
                     </div>
                 </div>
             </div>

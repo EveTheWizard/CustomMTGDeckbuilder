@@ -1,5 +1,5 @@
 pub mod auth;
-mod cards;
+pub mod cards;
 pub(crate) mod decks;
 
 use rocket::Route;

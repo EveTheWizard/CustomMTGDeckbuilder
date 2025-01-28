@@ -23,6 +23,14 @@ pub struct DeckCard {
     pub board: String, // Quantity of this card in the deck
 }
 
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct AddDeckPayload {
+    pub name: String, // The ID of the card to add
+    pub description: String, // The ID of the card to add
+    pub visibility: String, // The ID of the card to add
+}
+
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow, Clone)]
 pub struct DeckCardWithDetails {
     pub card_id: i32,
@@ -31,9 +39,13 @@ pub struct DeckCardWithDetails {
     pub board: String,
     pub card_name: String,
     pub card_type: Option<String>,
-    pub mana_cost: Option<String>,
+    pub mana_cost: Option<Vec<String>>,
     pub set_code: Option<String>,
-    pub colors: Option<String>,
+    pub colors: Option<Vec<String>>,
     pub o_text: Option<String>,
 }
 
+#[derive(Debug, Serialize, Deserialize, sqlx::FromRow, Clone)]
+pub struct DeckId {
+    pub id: i32,
+}

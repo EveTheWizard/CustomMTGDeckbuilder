@@ -7,7 +7,7 @@ use rocket_db_pools::Connection;
 use serde_json::Value;
 use sqlx::Acquire;
 use crate::datamodels::models::{Card};
-use crate::datamodels::deck::{Deck, DeckCard, DeckCardWithDetails};
+use crate::datamodels::deck::{AddDeckPayload, Deck, DeckCard, DeckCardWithDetails, DeckId};
 use crate::datamodels::users::{Claims, Token};
 use crate::db::connection::Postgres;
 use crate::utils::verify_jwt;
@@ -222,6 +222,81 @@ pub async fn get_single_deck(
     }
 }
 
+#[post("/api/decks/add", data = "<payload>", format = "application/json" )]
+pub async fn add_deck(
+    mut conn: Connection<Postgres>,
+    payload: Json<AddDeckPayload>, // Card ID from the request body
+    token: Option<Token<'_>>, // JWT token for authentication
+    ) -> Result<Json<Value>, Status> {
+    let pg_conn = conn.acquire().await.map_err(|_| Status::InternalServerError)?;
+
+    println!("Payload: {:?}", payload);
+    // Check if the token exists
+    if let Some(token) = token {
+        // Verify the JWT token
+        match verify_jwt(token) {
+            Ok(claims) => {
+                let user_id = claims.sub; // Get user ID from JWT claims
+
+                println!("JWT verified successfully.");
+
+                // Check if the user owns the deck or the deck is public
+                let creator = sqlx::query!(
+                    r#"
+                    SELECT username
+                    FROM users
+                    WHERE id = $1
+                    "#,
+                    user_id
+                )
+                    .fetch_optional(&mut *pg_conn)
+                    .await
+                    .map_err(|_| Status::InternalServerError)?;
+
+                if creator.is_none() {
+                    println!("User does not own this deck.");
+                    return Err(Status::Forbidden); // User doesn't own the deck
+                }
+
+                let creator_id = creator.unwrap().username;
+
+                // Insert the association into the deck_cards table
+                let insert_result = sqlx::query_as!(
+                    DeckId,
+                    r#"
+                    INSERT INTO decks ( name, description, creator_id, creator_name, visibility )
+                    VALUES ($1, $2, $3, $4, $5)
+                    RETURNING id
+                    "#,
+                    payload.name,
+                    payload.description,
+                    user_id,
+                    creator_id,
+                    payload.visibility,
+                )
+                    .fetch_optional(&mut *pg_conn)
+                    .await;
+
+
+                // Check if the insertion was successful
+                if let Err(_) = insert_result {
+                    println!("Failed to insert into decks");
+                    return Err(Status::InternalServerError); // Database error
+                }
+                println!("Inserted into decks");
+
+                // Return success
+                Ok(Json(json!({
+                        "deck_id": insert_result.unwrap(),
+                    })))
+            }
+            Err(_) => Err(Status::Unauthorized), // Invalid token
+        }
+    } else {
+        Err(Status::Unauthorized) // No token provided
+    }
+}
+
 #[derive(Debug, Deserialize)]
 pub struct AddCardPayload {
     card_id: i32, // The ID of the card to add
@@ -310,7 +385,7 @@ pub async fn add_card(
                         .execute(pg_conn)
                         .await;
 
-                    if let Err(_) = insert_result {
+                    if let Err(_) = update_result {
                         println!("Failed to insert into deck_cards");
                         return Err(Status::InternalServerError); // Database error
                     }

@@ -3,20 +3,90 @@ use rocket_db_pools::Connection;
 use sqlx::Acquire;
 use crate::datamodels::models::Card;
 use crate::db::connection::Postgres;
+use crate::datamodels::response::CardQuery;
 
-#[get("/cards")]
-async fn list_cards(mut conn: Connection<Postgres>) -> Result<Json<Vec<Card>>, rocket::http::Status> {
+#[get("/cards?<params..>")]
+pub async fn list_cards(mut conn: Connection<Postgres>,
+                        params: Option<CardQuery>
+) -> Result<Json<Vec<Card>>, rocket::http::Status> {
     // Acquire the SQLx connection explicitly
     let pg_conn = conn.acquire().await.map_err(|_| rocket::http::Status::InternalServerError)?;
 
-    // Use the acquired connection for the query
-    let result = sqlx::query_as!(
-    Card,
-    r#"SELECT id, name, mana_cost, card_type, oracle_text, power, toughness, rarity, set_code FROM cards"#)
-        .fetch_all(pg_conn) // Pass the acquired SQLx-compatible connection
-        .await
-        .map_err(|_| rocket::http::Status::InternalServerError)?;
+    // Start the SQL base query
+    let mut sql = String::from("SELECT id, name, mana_cost, card_type, oracle_text, power, toughness, colors, rarity, set_code, mana_value FROM cards");
+    let mut conditions = Vec::new();
+    let mut bind_params = Vec::new();
 
-    Ok(Json(result))
+
+    println!("Params: {:?}", params);
+    // Dynamically construct filters based on the optional query parameters
+    // Handle query parameters dynamically
+    if let Some(params) = params {
+        if let Some(name) = &params.name {
+            conditions.push(format!("name ILIKE ${}", bind_params.len() + 1));
+            bind_params.push(format!("%{}%", name)); // Partial match
+        }
+
+        if let Some(colors_exact) = &params.colors_exact {
+            // Exact match
+            conditions.push(format!("colors = ARRAY[${}]::text[]", bind_params.len() + 1));
+            bind_params.push(colors_exact.clone());
+        }
+
+        if let Some(colors_subset) = &params.colors_subset {
+            // Split the input string (e.g., "BU") into individual characters
+            let colors_array: Vec<String> = colors_subset
+                .chars()
+                .map(|c| c.to_string())
+                .collect();
+
+            // Add the condition for superset matching
+            conditions.push(format!("colors <@ ${}::text[]", bind_params.len() + 1)); // Use PostgreSQL array syntax
+            bind_params.push(format!("{{{}}}", colors_array.join(","))); // Format as PostgreSQL arra
+        }
+
+        if let Some(colors_superset) = &params.colors_superset {
+            // Split the input string (e.g., "BU") into individual characters
+            let colors_array: Vec<String> = colors_superset
+                .chars()
+                .map(|c| c.to_string())
+                .collect();
+
+            // Add the condition for superset matching
+            conditions.push(format!("colors @> ${}::text[]", bind_params.len() + 1)); // Use PostgreSQL array syntax
+            bind_params.push(format!("{{{}}}", colors_array.join(","))); // Format as PostgreSQL array
+        }
+    }
+
+    // Append conditions if any exist
+    if !conditions.is_empty() {
+        sql.push_str(" WHERE ");
+        sql.push_str(&conditions.join(" AND "));
+    }
+
+    // Add an optional sorting clause
+    sql.push_str(" ORDER BY name ASC");
+
+    // Use the acquired connection for the query
+    println!("Bind Params: {:?}", bind_params);
+    // Build the SQL query
+    let mut query = sqlx::query_as::<_, Card>(&sql);
+    for param in bind_params {
+        query = query.bind(param); // Safely bind the parameters
+    }
+
+    println!("Query: {}", sql);
+
+    // Execute the query and fetch results
+    let result = query
+        .fetch_all(pg_conn)
+        .await
+        .map_err(|e|  {
+            println!("Error: {}", e);
+            rocket::http::Status::InternalServerError
+        });
+
+
+    Ok(Json(result?))
 }
 

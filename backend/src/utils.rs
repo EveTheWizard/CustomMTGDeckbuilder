@@ -69,6 +69,6 @@ pub fn verify_jwt(token: Token) -> Result<Claims, Status, > {
 }
 
 fn get_secret_key() -> String {
-    //dotenv().ok(); // Load variables from .env file
+    dotenv().ok(); // Load variables from .env file
     env::var("JWT_SECRET").expect("JWT_SECRET must be set")
 }

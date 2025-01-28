@@ -1,4 +1,4 @@
 pub mod models;
 pub mod users;
-mod response;
+pub mod response;
 pub(crate) mod deck;

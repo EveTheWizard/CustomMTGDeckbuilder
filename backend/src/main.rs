@@ -28,23 +28,6 @@ fn index() -> &'static str {
     "Welcome to the MTG Deckbuilder API!"
 }
 
-#[get("/cards")]
-async fn list_cards(mut conn: Connection<Postgres>) -> Result<Json<Vec<Card>>, rocket::http::Status> {
-    // Acquire the SQLx connection explicitly
-    let pg_conn = conn.acquire().await.map_err(|_| rocket::http::Status::InternalServerError)?;
-
-    // Use the acquired connection for the query
-    let result = sqlx::query_as!(
-    Card,
-    r#"SELECT id, name, mana_cost, card_type, oracle_text, power, toughness, rarity, set_code FROM cards"#)
-        .fetch_all(pg_conn) // Pass the acquired SQLx-compatible connection
-        .await
-        .map_err(|_| rocket::http::Status::InternalServerError)?;
-
-    Ok(Json(result))
-}
-
-
 #[launch]
 fn rocket() -> _ {
     dotenv().ok();
@@ -70,8 +53,9 @@ fn rocket() -> _ {
     rocket::build()
         .attach(Postgres::init())
         .manage(pool)
-        .mount("/", routes![index, list_cards, routes::auth::register, routes::auth::login, routes::decks::list_decks,
-        routes::decks::get_single_deck, routes::decks::add_card, routes::decks::increment_card_quantity, routes::decks::decrement_card_quantity ],  )
+        .mount("/", routes![index, routes::auth::register, routes::auth::login, routes::decks::list_decks,
+        routes::decks::get_single_deck, routes::decks::add_card, routes::decks::increment_card_quantity, routes::decks::decrement_card_quantity,
+        routes::cards::list_cards, routes::decks::add_deck ],  )
         .attach(cors)
 }
 
