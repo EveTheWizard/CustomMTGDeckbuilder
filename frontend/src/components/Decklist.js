@@ -17,7 +17,7 @@ const DecksView = () => {
             : {};
 
 
-        fetch("http://localhost:8000/api/decks", {
+        fetch("http://127.0.0.1:8000/api/decks", {
             method: "GET",
             headers: headers,
         })

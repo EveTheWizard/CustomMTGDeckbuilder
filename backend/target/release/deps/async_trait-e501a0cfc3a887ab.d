@@ -1,0 +1,12 @@
+/mnt/e/CustomMTGDeckbuilder/backend/target/release/deps/libasync_trait-e501a0cfc3a887ab.so: /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/lib.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/args.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/bound.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/expand.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/lifetime.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/parse.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/receiver.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/verbatim.rs
+
+/mnt/e/CustomMTGDeckbuilder/backend/target/release/deps/async_trait-e501a0cfc3a887ab.d: /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/lib.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/args.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/bound.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/expand.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/lifetime.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/parse.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/receiver.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/verbatim.rs
+
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/lib.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/args.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/bound.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/expand.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/lifetime.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/parse.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/receiver.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.85/src/verbatim.rs:

@@ -1,0 +1,11 @@
+/mnt/e/CustomMTGDeckbuilder/backend/target/release/deps/liblitemap-61c8506d2e4b8c1e.rmeta: /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/lib.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/map.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/store/mod.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/store/slice_impl.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/store/vec_impl.rs
+
+/mnt/e/CustomMTGDeckbuilder/backend/target/release/deps/liblitemap-61c8506d2e4b8c1e.rlib: /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/lib.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/map.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/store/mod.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/store/slice_impl.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/store/vec_impl.rs
+
+/mnt/e/CustomMTGDeckbuilder/backend/target/release/deps/litemap-61c8506d2e4b8c1e.d: /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/lib.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/map.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/store/mod.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/store/slice_impl.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/store/vec_impl.rs
+
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/lib.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/map.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/store/mod.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/store/slice_impl.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litemap-0.7.4/src/store/vec_impl.rs:

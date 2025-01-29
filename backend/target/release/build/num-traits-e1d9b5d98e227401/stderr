@@ -1,0 +1,13 @@
+error: could not copy "/mnt/e/CustomMTGDeckbuilder/backend/target/release/build/num-traits-e1d9b5d98e227401/out/autocfg_b27e3a0e1bf2d5a3_0.autocfg_b27e3a0e1bf2d5a3_0.7886ad107cd4ddac-cgu.0.rcgu.ll" to "/mnt/e/CustomMTGDeckbuilder/backend/target/release/build/num-traits-e1d9b5d98e227401/out/autocfg_b27e3a0e1bf2d5a3_0.ll": Operation not permitted (os error 1)
+
+error: aborting due to 1 previous error
+
+error: could not copy "/mnt/e/CustomMTGDeckbuilder/backend/target/release/build/num-traits-e1d9b5d98e227401/out/autocfg_b27e3a0e1bf2d5a3_1.autocfg_b27e3a0e1bf2d5a3_1.1e323ab79176bd44-cgu.0.rcgu.ll" to "/mnt/e/CustomMTGDeckbuilder/backend/target/release/build/num-traits-e1d9b5d98e227401/out/autocfg_b27e3a0e1bf2d5a3_1.ll": Operation not permitted (os error 1)
+
+error: aborting due to 1 previous error
+
+warning: autocfg could not probe for `std`
+error: could not copy "/mnt/e/CustomMTGDeckbuilder/backend/target/release/build/num-traits-e1d9b5d98e227401/out/autocfg_b27e3a0e1bf2d5a3_2.autocfg_b27e3a0e1bf2d5a3_2.44f4eba92bf6c8ac-cgu.0.rcgu.ll" to "/mnt/e/CustomMTGDeckbuilder/backend/target/release/build/num-traits-e1d9b5d98e227401/out/autocfg_b27e3a0e1bf2d5a3_2.ll": Operation not permitted (os error 1)
+
+error: aborting due to 1 previous error
+

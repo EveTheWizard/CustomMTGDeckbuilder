@@ -1,0 +1,11 @@
+/mnt/e/CustomMTGDeckbuilder/backend/target/release/deps/liblinux_raw_sys-7fc441ad4a8946b3.rmeta: /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/lib.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/elf.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/x86_64/errno.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/x86_64/general.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/x86_64/ioctl.rs
+
+/mnt/e/CustomMTGDeckbuilder/backend/target/release/deps/liblinux_raw_sys-7fc441ad4a8946b3.rlib: /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/lib.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/elf.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/x86_64/errno.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/x86_64/general.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/x86_64/ioctl.rs
+
+/mnt/e/CustomMTGDeckbuilder/backend/target/release/deps/linux_raw_sys-7fc441ad4a8946b3.d: /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/lib.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/elf.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/x86_64/errno.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/x86_64/general.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/x86_64/ioctl.rs
+
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/lib.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/elf.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/x86_64/errno.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/x86_64/general.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/linux-raw-sys-0.4.15/src/x86_64/ioctl.rs:

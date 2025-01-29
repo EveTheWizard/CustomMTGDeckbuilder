@@ -1,0 +1,9 @@
+error: could not copy "/mnt/e/CustomMTGDeckbuilder/backend/target/release/build/slab-53c277c16ff7975d/out/autocfg_becb45b93fb9f547_0.autocfg_becb45b93fb9f547_0.8453c36068f696b3-cgu.0.rcgu.ll" to "/mnt/e/CustomMTGDeckbuilder/backend/target/release/build/slab-53c277c16ff7975d/out/autocfg_becb45b93fb9f547_0.ll": Operation not permitted (os error 1)
+
+error: aborting due to 1 previous error
+
+error: could not copy "/mnt/e/CustomMTGDeckbuilder/backend/target/release/build/slab-53c277c16ff7975d/out/autocfg_becb45b93fb9f547_1.autocfg_becb45b93fb9f547_1.fcea76cf6b231753-cgu.0.rcgu.ll" to "/mnt/e/CustomMTGDeckbuilder/backend/target/release/build/slab-53c277c16ff7975d/out/autocfg_becb45b93fb9f547_1.ll": Operation not permitted (os error 1)
+
+error: aborting due to 1 previous error
+
+warning: autocfg could not probe for `std`

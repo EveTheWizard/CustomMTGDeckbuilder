@@ -1,0 +1,11 @@
+/mnt/e/CustomMTGDeckbuilder/backend/target/release/deps/librocket_db_pools-57ffc2ef9be3d046.rmeta: /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/lib.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/database.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/error.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/pool.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/config.rs
+
+/mnt/e/CustomMTGDeckbuilder/backend/target/release/deps/librocket_db_pools-57ffc2ef9be3d046.rlib: /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/lib.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/database.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/error.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/pool.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/config.rs
+
+/mnt/e/CustomMTGDeckbuilder/backend/target/release/deps/rocket_db_pools-57ffc2ef9be3d046.d: /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/lib.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/database.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/error.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/pool.rs /home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/config.rs
+
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/lib.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/database.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/error.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/pool.rs:
+/home/evelyn/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rocket_db_pools-0.2.0/src/config.rs:

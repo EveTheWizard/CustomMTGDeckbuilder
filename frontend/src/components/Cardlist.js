@@ -40,7 +40,7 @@ const CardsList = () => {
     };
 
     useEffect(() => {
-        fetch("http://localhost:8000/cards")
+        fetch("http://127.0.0.1:8000/cards")
             .then((res) => res.json())
             .then((data) => setCards(data))
             .catch((err) => console.error(err));
@@ -58,7 +58,7 @@ const CardsList = () => {
         console.log(filters)
         const queryParams = new URLSearchParams(filters).toString();
         try {
-            const response = await fetch(`http://localhost:8000/cards?${queryParams}`);
+            const response = await fetch(`http://127.0.0.1:8000/cards?${queryParams}`);
 
             // Check if the response is JSON
             if (!response.ok) {
