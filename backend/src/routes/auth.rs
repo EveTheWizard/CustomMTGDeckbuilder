@@ -115,6 +115,7 @@ pub async fn login(
     return Err(status::Custom(Status::Unauthorized, Json(LoginResponse { message: "Invalid credentials".into(), status: "580 ERROR".to_string(), token: None })))
 }
 
+/*
 #[get("/api/verify_login")]
 pub async fn verify_login(
     mut conn: Connection<Postgres>,
@@ -141,3 +142,4 @@ pub async fn verify_login(
 
     Err(Status::Unauthorized)
 }
+ */
