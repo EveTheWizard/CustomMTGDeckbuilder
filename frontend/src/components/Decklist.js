@@ -17,7 +17,7 @@ const DecksView = () => {
             : {};
 
 
-        fetch("http://127.0.0.1:8000/api/decks", {
+        fetch("http://mtg-api.quetzalcoatlproject.com:8000/api/decks", {
             method: "GET",
             headers: headers,
         })
@@ -45,7 +45,7 @@ const DecksView = () => {
             ...(token && { Authorization: `Bearer ${token}` }),
         };
 
-        fetch("http://127.0.0.1:8000/api/decks/add", {
+        fetch("http://mtg-api.quetzalcoatlproject.com:8000/api/decks/add", {
             method: "POST",
             headers: headers,
             body: JSON.stringify(newDeck),
