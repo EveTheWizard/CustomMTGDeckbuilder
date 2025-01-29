@@ -40,7 +40,7 @@ const CardsList = () => {
     };
 
     useEffect(() => {
-        fetch("http://mtg-api.quetzalcoatlproject.com:8000/cards")
+        fetch("https://mtg-api.quetzalcoatlproject.com:8000/cards")
             .then((res) => res.json())
             .then((data) => setCards(data))
             .catch((err) => console.error(err));
@@ -58,7 +58,7 @@ const CardsList = () => {
         console.log(filters)
         const queryParams = new URLSearchParams(filters).toString();
         try {
-            const response = await fetch(`http://mtg-api.quetzalcoatlproject.com:8000/cards?${queryParams}`);
+            const response = await fetch(`https://mtg-api.quetzalcoatlproject.com:8000/cards?${queryParams}`);
 
             // Check if the response is JSON
             if (!response.ok) {

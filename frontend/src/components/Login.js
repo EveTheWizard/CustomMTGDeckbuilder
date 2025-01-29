@@ -19,7 +19,7 @@ function Login({ setIsAuthenticated }) {
         const newUser = { username, password };
 
         try {
-            const response = await fetch("http://mtg-api.quetzalcoatlproject.com:8000/api/login", {
+            const response = await fetch("https://mtg-api.quetzalcoatlproject.com:8000/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

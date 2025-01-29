@@ -36,7 +36,7 @@ const SingleDeckViewer = () => {
             try {
                 setLoading(true); // Start loading
                 const token = localStorage.getItem("jwt");
-                const response = await fetch(`http://mtg-api.quetzalcoatlproject.com:8000/api/decks/${deckId}`, {
+                const response = await fetch(`https://mtg-api.quetzalcoatlproject.com:8000/api/decks/${deckId}`, {
                     method: "GET",
                     headers: {
                         "Authorization": token ? `Bearer ${token}` : "", // Add JWT token if available
@@ -75,7 +75,7 @@ const SingleDeckViewer = () => {
 
             try {
                 const token = localStorage.getItem("jwt");
-                const response = await fetch(`http://mtg-api.quetzalcoatlproject.com:8000/cards?name=${searchTerm}`, {
+                const response = await fetch(`https://mtg-api.quetzalcoatlproject.com:8000/cards?name=${searchTerm}`, {
                     method: "GET",
                     headers: {
                         "Authorization": token ? `Bearer ${token}` : "", // Add JWT token
@@ -99,7 +99,7 @@ const SingleDeckViewer = () => {
     const decrementCardQuantity = async (cardId, board, increment) => {
         try {
             const token = localStorage.getItem("jwt");
-            const response = await fetch(`http://mtg-api.quetzalcoatlproject.com:8000/decks/${deckId}/cards/${cardId}/decrement`, {
+            const response = await fetch(`https://mtg-api.quetzalcoatlproject.com:8000/decks/${deckId}/cards/${cardId}/decrement`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -135,7 +135,7 @@ const SingleDeckViewer = () => {
     const incrementCardQuantity = async (cardId, board, increment) => {
         try {
             const token = localStorage.getItem("jwt");
-            const response = await fetch(`http://mtg-api.quetzalcoatlproject.com:8000/decks/${deckId}/cards/${cardId}/increment`, {
+            const response = await fetch(`https://mtg-api.quetzalcoatlproject.com:8000/decks/${deckId}/cards/${cardId}/increment`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -188,7 +188,7 @@ const SingleDeckViewer = () => {
             console.log(card);
             setAdding(true); // Set adding state
             const token = localStorage.getItem("jwt");
-            const response = await fetch(`http://mtg-api.quetzalcoatlproject.com:8000/decks/${deckId}/addCard`, {
+            const response = await fetch(`https://mtg-api.quetzalcoatlproject.com:8000/decks/${deckId}/addCard`, {
                 method: "POST", // Use POST to add the card to the deck
                 headers: {
                     "Content-Type": "application/json",
