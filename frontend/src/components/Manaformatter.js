@@ -19,6 +19,7 @@ const ManaCostFormatter = ({ manaCost }) => {
         'R': 'small sr',
         'G': 'small sg',
         'W': 'small sw',
+        'X': 'small sx',
         // Add hybrid or other special symbols here if needed
     };
     console.log("manaCost:", manaCost, typeof manaCost);

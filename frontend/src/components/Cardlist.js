@@ -83,13 +83,27 @@ const CardsList = () => {
     const parseSearchTerm = (searchTerm) => {
         const filters = {};
 
-        if (searchTerm.startsWith("colors=")) {
-            filters.colors_exact = searchTerm.slice(7); // Extract value after "colors="
-        } else if (searchTerm.startsWith("colors<=")) {
-            filters.colors_subset = searchTerm.slice(8); // Extract value after "colors<="
-        } else if (searchTerm.startsWith("colors>=")) {
-            filters.colors_superset = searchTerm.slice(8); // Extract value after "colors>="
-        }
+        const terms = searchTerm.split(/\s+/);
+
+        terms.forEach(term => {
+            if (term.startsWith("colors=")) {
+                filters.colors_exact = term.slice(7); // Extract value after "colors="
+            } else if (term.startsWith("colors<=")) {
+                filters.colors_subset = term.slice(8); // Extract value after "colors<="
+            } else if (term.startsWith("colors>=")) {
+                filters.colors_superset = term.slice(8); // Extract value after "colors>="
+            } else if (term.startsWith("mv>=")) {
+                filters.mv_superset = term.slice(4); // Extract value after "colors>="
+            } else if (term.startsWith("mv<=")) {
+                filters.mv_subset = term.slice(4); // Extract value after "colors>="
+            } else if (term.startsWith("mv=")) {
+                filters.mv_exact = term.slice(4); // Extract value after "colors>="
+            } else if (term.includes(":")) {
+                const [key, value] = term.split(":");
+                filters[key] = value;
+            }
+        });
+
         console.log(filters);
         return filters;
     };

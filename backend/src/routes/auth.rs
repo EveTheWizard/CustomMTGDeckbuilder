@@ -2,7 +2,7 @@ use chrono::Utc;
 use rocket::serde::{json::Json};
 use rocket::State;
 use crate::{datamodels, datamodels::users::NewUser, schema::users};
-use crate::utils::{generate_jwt, hash_password };
+use crate::utils::{generate_jwt, hash_password, verify_jwt};
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager };
 use diesel::row::NamedRow;
@@ -113,4 +113,31 @@ pub async fn login(
         }
 
     return Err(status::Custom(Status::Unauthorized, Json(LoginResponse { message: "Invalid credentials".into(), status: "580 ERROR".to_string(), token: None })))
+}
+
+#[get("/api/verify_login")]
+pub async fn verify_login(
+    mut conn: Connection<Postgres>,
+    cookies: &CookieJar<'_>,
+) -> Result<Json<User>, Status> {
+    // Extract JWT from cookie or localStorage equivalent (if using headers)
+    let token = cookies.get("jwt").map(|cookie| cookie.value().to_string());
+
+    if let Some(token) = token {
+        match verify_jwt(&token) {
+            Ok(claims) => {
+                // Fetch user from database using claims.user_id
+                let user = sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+                    .bind(claims.user_id)
+                    .fetch_one(&mut *conn)
+                    .await
+                    .map_err(|_| Status::Unauthorized)?;
+
+                return Ok(Json(user));
+            }
+            Err(_) => return Err(Status::Unauthorized),
+        }
+    }
+
+    Err(Status::Unauthorized)
 }

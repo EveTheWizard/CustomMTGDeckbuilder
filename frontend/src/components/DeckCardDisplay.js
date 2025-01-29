@@ -4,7 +4,24 @@ const CardDisplay = ({ cards, onIncrement, onDecrement, setImage }) => {
     // Define the primary types to group by
     const primaryTypes = ["Creature", "Artifact", "Instant", "Sorcery", "Enchantment", "Land"];
 
+
+    // Function to group and count cards by type
+    const groupAndCountByType = (cards) => {
+        return cards.reduce((acc, card) => {
+            //const type = card.card_type || "Other"; // Default to "Other" if type is missing
+            const type = primaryTypes.find((primaryType) => card.card_type.includes(primaryType)) || "Other";
+            if (!acc[type]) {
+                acc[type] = { count: 0, cards: [] }; // Initialize count and card list
+            }
+            acc[type].count += card.quantity; // Sum up quantities
+            acc[type].cards.push(card); // Store the card details
+            return acc;
+        }, {});
+    };
+
+    const groupedCards = groupAndCountByType(cards);
     // Group cards by their primary type
+    /*
     const groupedCards = cards.reduce((acc, card) => {
         const type = primaryTypes.find((primaryType) => card.card_type.includes(primaryType)) || "Other";
         if (!acc[type]) {
@@ -13,15 +30,17 @@ const CardDisplay = ({ cards, onIncrement, onDecrement, setImage }) => {
         acc[type].push(card);
         return acc;
     }, {});
+     */
 
     return (
         <div>
             {Object.keys(groupedCards).length > 0 ? (
-                Object.entries(groupedCards).map(([type, typeCards]) => (
+                //Object.entries(groupedCards).map(([type, typeCards]) => (
+                Object.entries(groupedCards).map(([type, { count, cards }]) => (
                     <div key={type} className="mb-4">
                         {/* Header for each type */}
-                        <h2 className="text-xl font-bold border-b pb-2 mb-2">{type}</h2>
-                        {typeCards.map((card) => {
+                        <h2 className="text-xl font-bold border-b pb-2 mb-2">{type} - {count}</h2>
+                        {cards.map((card) => {
                             const imageSrc = `/images/cards-2/${card.card_id}_${card.card_name
                                 .replace(/\s+/g, "_")
                                 .replace(/[,']/g, "")}.jpg`;

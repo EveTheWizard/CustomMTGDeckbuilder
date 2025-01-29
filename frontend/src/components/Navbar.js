@@ -1,33 +1,18 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import '../css/Navbar.css';
 import PersistentThemeSwitcher from "./PersistentThemeSwitcher";
 import {useNavigate} from "react-router-dom";
+import {useAuth} from "./AuthContext";
 
-const Navbar = ( { isAuthenticated, setIsAuthenticated } ) => {
+const Navbar = () => {
+    const { isAuthenticated, setIsAuthenticated } = useAuth();
     const navigate = useNavigate();
 
-    // Function to check if the user is logged in
-    const isLoggedIn = () => {
-        const token = localStorage.getItem("jwt");
-        if (!token) return false;
-
-        try {
-            //TODO Add api call to verify jwt
-            return true;
-            // Check if the token is expired
-            //const decodedToken = jwtDecode(token);
-            //const currentTime = Date.now() / 1000; // Convert milliseconds to seconds
-            //return decodedToken.exp > currentTime;
-        } catch (error) {
-            console.error("Invalid or expired token", error);
-            return false;
-        }
-    };
-
-    // Function to handle logout
     const handleLogout = () => {
-        localStorage.removeItem("jwt"); // Remove token
-        navigate("/login"); // Redirect to login page
+        localStorage.removeItem("jwt");
+        localStorage.removeItem("isAuthenticated");
+        setIsAuthenticated(false);
+        navigate("/login");
     };
 
     return (
@@ -43,8 +28,8 @@ const Navbar = ( { isAuthenticated, setIsAuthenticated } ) => {
                 <a href="/downloads" className="navbar__link">Downloads</a>
                 {isAuthenticated ? (
                     <>
-                        <a href="/profile" to="/profile">Profile</a>
-                        <button onClick={handleLogout}>Logout</button>
+                        <a href="/profile" to="/profile" className="navbar__link">Profile</a>
+                        <button onClick={handleLogout} className="navbar__link">Logout</button>
                     </>
                 ) : (
                     <>

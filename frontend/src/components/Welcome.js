@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 
 const Welcome = () => {
 
@@ -7,42 +7,60 @@ const Welcome = () => {
             id: 1,
             name: "Foundations Bonus Set",
             date: "2025-02-10",
+            creators: "The Gang",
             image: "",
         },
         {
             id: 2,
             name: "Universes Beyond: Rush",
             date: "2025-02-17",
-            image: "https://via.placeholder.com/300x200?text=Legendary+Duelists",
+            creators: "Chris",
+            image: "",
         },
         {
             id: 3,
             name: "Echoes of Zagoth",
             date: "2025-03-10",
-            image: "https://via.placeholder.com/300x200?text=Masterforce+Revolution",
+            creators: "Evelyn",
+            image: "",
         },
     ];
 
 
     return (
-        <div className="flex flex-col justify-center items-center h-screen">
-            <div className={ "flex flex-row justify-center items-center w-full rounded-xl bg-neutral text-neutral-content h-min-content m-4 p-6 "}>
-                <div className="flex justify-center text-xl">About the Format</div>
+        <div className="flex flex-col justify-top items-center h-screen">
+            <div className="flex flex-row w-full gap-4 m-4 text-center" >
+                <div className={ "flex-[2] justify-center items-center w-full rounded-xl bg-base-300 text-base-content h-min-content p-6 "}>
+                    <div className="justify-center text-xl">
+                        <h1 className="text-6xl">About the Format</h1><br/>
+                        Welcome to the Baroque Format! This is a format spawned by the idea of Chris to build a custom format among friends for us to play casually.
+                        This is due to there not being a nice power level for us to play 60 card formats without us optimizing into oblivion. Theres no net-decking
+                        or existing meta because most of these cards are created by us. As we play metas will develop and as new set releases new decks will come into the format.
+                        This site is to catalog the cards legal in this format so that players will be able to reference them as well as build decks with them as there is not a deck builder
+                        that allows custom cards that is reasonable to use. It will also have banlists that we will vote on, card errata's, and new set releases.
+                        <br/>
+                        <br/>
+                        <br/>
+                        <h2 className="align-right">If you have any suggestions for the site ping me on the Discord in the development chat @Noodle</h2>
+                    </div>
+                </div>
+
+                <div className={ "flex-1 flex-col justify-center items-center w-full rounded-xl bg-base-300 text-base-content h-min-content p-6 "}>
+
+                    <div className="justify-center text-xl">
+                       <h1 className="text-4xl" >Banlist</h1><br/>
+                        No cards are banned at this time
+                    </div>
+
+
+                </div>
+
             </div>
-            <div className="flex flex-row justify-center flex-grow w-full">
-                <div className="flex items-top justify-center p-2 m-4 w-full">
-                    <div className="w-full max-w-md p-6 rounded-lg shadow-md bg-neutral text-neutral-content">
-                        <div className="flex justify-center text-xl">Banlist</div>
-                    </div>
-                </div>
-                <div className="flex items-top justify-center p-2 m-4 w-full">
-                    <div className="w-full max-w-md p-6 rounded-lg shadow-md bg-neutral text-neutral-content">
-                        <h1 className="flex justify-center text-xl">Recently Errata'd Cards</h1>
-                    </div>
-                </div>
-                <div className="flex flex-row justify-center flex-grow w-100 bg-neutral text-neutral-content p-4 rounded-lg m-4">
+            <div className="flex flex-row w-full gap-4 m-4 text-center" >
+
+                <div className={ "flex-[2] justify-center items-center w-full rounded-xl bg-base-300 text-base-content h-min-content p-6 "}>
                     <div className="announcement-container">
-                        <h1 className="announcement-title text-xl">Upcoming Set Announcements</h1>
+                        <h1 className="announcement-title text-4xl">Upcoming Set Announcements</h1>
                         <br/>
                         <div className="cards-container">
                             {upcomingReleases.map((release) => (
@@ -54,6 +72,7 @@ const Welcome = () => {
                                     />
                                     <div className="set-card-content">
                                         <h2 className="set-card-title">{release.name}</h2>
+                                        <h2 className="set-card-title">Author: {release.creators}</h2>
                                         <p className="set-card-date">
                                             Releasing on: {new Date(release.date).toDateString()}
                                         </p>
@@ -64,6 +83,11 @@ const Welcome = () => {
                         </div>
                     </div>
                 </div>
+
+                <div className={ "flex-1 justify-center items-center w-full rounded-xl bg-base-300 text-base-content h-min-content p-6 "}>
+                        <h1 className="flex justify-center text-4xl">Recently Errata'd Cards</h1>
+                </div>
+
             </div>
         </div>
     );

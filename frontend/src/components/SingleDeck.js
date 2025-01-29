@@ -10,11 +10,15 @@ const SingleDeckViewer = () => {
     const [loading, setLoading] = useState(true); // State to track loading deck data
     const [error, setError] = useState(null); // State to track deck errors
     const mainboardCount = mainboard.reduce((sum, card) => sum + card.quantity, 0);
+    const sideboardCount = sideboard.reduce((sum, card) => sum + card.quantity, 0);
     const [selectedImage, setSelectedImage] = useState(null); // State to track the currently selected image for modal
 
     const [searchTerm, setSearchTerm] = useState(""); // State to store the search term
     const [searchResults, setSearchResults] = useState([]); // State to store search results
     const [adding, setAdding] = useState(false); // State to track addition status
+
+    // Function to count cards by type
+
 
     const handleViewClick = (imageSrc) => {
         setSelectedImage(imageSrc);
@@ -250,10 +254,10 @@ const SingleDeckViewer = () => {
     }
 
     return (
-        <div className="min-h-screen bg-base-200 px-6 py-8">
-            <div className="flex flex-row items-stretch gap-1">
+        <div className="flex flex-col min-h-screen bg-base-200 px-6 py-8 justify-center items-center w-full">
+            <div className="flex flex-row items-stretch gap-4 justify-center justify-self-center w-full">
                 <div className="flex-1 w-full align-stretch">
-                    <div className="max-w-4xl mx-auto card bg-base-100 shadow-xl h-full">
+                    <div className="max-w-6xl min-w-fit mx-auto card bg-base-100 shadow-xl h-full">
                         <div className="card-body">
                             <h1 className="text-3xl font-bold text-primary">Preview</h1>
                             {selectedImage && (
@@ -286,7 +290,7 @@ const SingleDeckViewer = () => {
                     </div>
                 </div>
                 <div className="flex-[2] w-full">
-                    <div className="max-w-4xl mx-auto card bg-base-100 shadow-xl">
+                    <div className="max-w-6xl card bg-base-100 shadow-xl">
                         {/* Deck Info */}
                         <div className="card-body">
                             <h1 className="text-3xl font-bold text-primary">{deck.name}</h1>
@@ -320,6 +324,10 @@ const SingleDeckViewer = () => {
                                 <div className="card-body">
                                     <h2 className="text-xl font-bold text-secondary">Mainboard - {mainboardCount} Cards</h2>
                                     <CardDisplay cards={mainboard} onIncrement={incrementCardQuantity} onDecrement={decrementCardQuantity} setImage={setSelectedImage} />
+                                </div>
+                                <div className="card-body">
+                                    <h2 className="text-xl font-bold text-secondary">Sideboard - {sideboardCount} Cards</h2>
+                                    <CardDisplay cards={sideboard} onIncrement={incrementCardQuantity} onDecrement={decrementCardQuantity} setImage={setSelectedImage} />
                                 </div>
                             </div>
 

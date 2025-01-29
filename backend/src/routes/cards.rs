@@ -27,9 +27,39 @@ pub async fn list_cards(mut conn: Connection<Postgres>,
             bind_params.push(format!("%{}%", name)); // Partial match
         }
 
+        if let Some( card_type) = &params.CT {
+            conditions.push(format!("card_type ILIKE ${}", bind_params.len() + 1));
+            bind_params.push(format!("%{}%", card_type)); // Partial match
+        }
+
+        if let Some(text) = &params.T{
+            conditions.push(format!("oracle_text ILIKE ${}", bind_params.len() + 1));
+            bind_params.push(format!("%{}%", text)); // Partial match
+        }
+
+        if let Some(rarity) = &params.rarity{
+            conditions.push(format!("rarity = ${}", bind_params.len() + 1));
+            bind_params.push(format!("{}", rarity)); // Partial match
+        }
+
+        if let Some( value) = &params.mv_exact{
+            conditions.push(format!("mana_value = ${}::INTEGER", bind_params.len() + 1));
+            bind_params.push(value.clone().to_string());
+        }
+
+        if let Some( value) = &params.mv_superset {
+            conditions.push(format!("mana_value >=  ${}::INTEGER", bind_params.len() + 1));
+            bind_params.push(value.clone().to_string());
+        }
+
+        if let Some( value) = &params.mv_subset {
+            conditions.push(format!("mana_value <= ${}::INTEGER)", bind_params.len() + 1));
+            bind_params.push(value.clone().to_string());
+        }
+
         if let Some(colors_exact) = &params.colors_exact {
             // Exact match
-            conditions.push(format!("colors = ARRAY[${}]::text[]", bind_params.len() + 1));
+            conditions.push(format!("colors = ${}", bind_params.len() + 1));
             bind_params.push(colors_exact.clone());
         }
 

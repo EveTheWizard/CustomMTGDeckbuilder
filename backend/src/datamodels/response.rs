@@ -14,5 +14,10 @@ pub struct CardQuery {
     pub mana_value: Option<i32>,
     pub colors_exact: Option<String>,
     pub colors_subset: Option<String>,
-    pub colors_superset: Option<String>
+    pub colors_superset: Option<String>,
+    pub T: Option<String>,
+    pub CT: Option<String>,
+    pub mv_exact: Option<i32>,
+    pub mv_superset: Option<i32>,
+    pub mv_subset: Option<i32>
 }

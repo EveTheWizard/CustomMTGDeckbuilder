@@ -38,6 +38,7 @@ function Login({ setIsAuthenticated }) {
             if (responseData.token) {
                 // Save token to localStorage or sessionStorage
                 localStorage.setItem("jwt", responseData.token);
+                localStorage.setItem("isAuthenticated", "true"); // Store authentication state
                 setIsAuthenticated(true);
                 setSuccessMessage("Login Successful!");
                 navigate("/dashboard");
