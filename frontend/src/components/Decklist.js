@@ -17,7 +17,7 @@ const DecksView = () => {
             : {};
 
 
-        fetch("https://mtg-api.quetzalcoatlproject.com:8000/api/decks", {
+        fetch(`${process.env.REACT_APP_API_URL}/api/decks`, {
             method: "GET",
             headers: headers,
         })
@@ -45,7 +45,7 @@ const DecksView = () => {
             ...(token && { Authorization: `Bearer ${token}` }),
         };
 
-        fetch("https://mtg-api.quetzalcoatlproject.com:8000/api/decks/add", {
+        fetch(`${process.env.REACT_APP_API_URL}/api/decks/add`, {
             method: "POST",
             headers: headers,
             body: JSON.stringify(newDeck),
@@ -80,11 +80,11 @@ const DecksView = () => {
                 {decks.map((deck) => (
                     <div
                         key={deck.id}
-                        className="card card-compact bg-base-100 shadow-xl hover:shadow-2xl transition duration-300 ease-in-out"
+                        className="card card-compact bg-base-100 shadow-xl hover:shadow-2xl transition duration-300 ease-in-out hover:scale-110"
                         onClick={() => navigate(`/decks/${deck.id}`)} // Navigate to SingleDeckViewer
                     >
                         <figure>
-                            <img src={deck.image} alt={""} className="object-cover w-full h-48" />
+                            <img  src={deck.deck_image} alt={""} className="object-cover object-[center_18%] transform scale-125 w-full h-48" />
                         </figure>
                         <div className="card-body">
                             <h2 className="card-title">{deck.name}</h2>

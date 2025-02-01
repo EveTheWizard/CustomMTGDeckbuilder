@@ -1,9 +1,9 @@
 import React from "react";
+import ManaCostFormatter from "./Manaformatter";
 
-const CardDisplay = ({ cards, onIncrement, onDecrement, setImage }) => {
+const CardDisplay = ({ cards, onIncrement, onDecrement, setImage, setDeckImage, moveCard }) => {
     // Define the primary types to group by
     const primaryTypes = ["Creature", "Artifact", "Instant", "Sorcery", "Enchantment", "Land"];
-
 
     // Function to group and count cards by type
     const groupAndCountByType = (cards) => {
@@ -52,12 +52,19 @@ const CardDisplay = ({ cards, onIncrement, onDecrement, setImage }) => {
                                         onMouseEnter={() => setImage(imageSrc)} // Set the image on hover
                                         //onMouseLeave={() => setImage(null)} // Clear the image on mouse leave
                                     >
-                                        <span className="font-bold">{card.quantity}x</span> {card.card_name}
-                                        <span className="text-gray-500 ml-2">({card.card_type})</span>
+                                        <div className="flex flex-row">
+                                            <span className="font-bold">{card.quantity}x </span>
+                                            <span className="ml-2"> {card.card_name} </span>
+                                            <span className="text-gray-500 ml-2">
+                                            <ManaCostFormatter manaCost={card.mana_cost} />
+                                        </span>
+                                        </div>
                                     </div>
                                     <div>
+                                        <button className="px-2 py-1 bg-primary text-primary-content rounded " onClick={() => moveCard( card.card_id, card.board )}>Move</button>
+                                        <button className="px-2 py-1 bg-primary text-primary-content rounded ml-2" onClick={() => setDeckImage(imageSrc)}>Img</button>
                                         <button
-                                            className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-700"
+                                            className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-700 ml-2"
                                             onClick={() => onIncrement(card.card_id, card.board)}
                                         >
                                             +

@@ -55,7 +55,7 @@ fn rocket() -> _ {
         .manage(pool)
         .mount("/", routes![index, routes::auth::register, routes::auth::login, routes::decks::list_decks,
         routes::decks::get_single_deck, routes::decks::add_card, routes::decks::increment_card_quantity, routes::decks::decrement_card_quantity,
-        routes::cards::list_cards, routes::decks::add_deck ],  )
+        routes::cards::list_cards, routes::decks::add_deck, routes::decks::change_visibility, routes::decks::set_image, routes::decks::move_card ],  )
         .attach(cors)
 }
 

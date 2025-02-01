@@ -41,6 +41,7 @@ pub struct DeckCardWithDetails {
     pub card_type: Option<String>,
     pub mana_cost: Option<Vec<String>>,
     pub set_code: Option<String>,
+    pub super_types: Option<String>,
     pub colors: Option<Vec<String>>,
     pub o_text: Option<String>,
 }

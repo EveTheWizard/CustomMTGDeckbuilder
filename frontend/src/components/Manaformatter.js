@@ -20,23 +20,36 @@ const ManaCostFormatter = ({ manaCost }) => {
         'G': 'small sg',
         'W': 'small sw',
         'X': 'small sx',
+        'UR': 'small sur',
+        'RW': 'small srw',
+        'UB': 'small sub',
+        'UG': 'small sug',
         // Add hybrid or other special symbols here if needed
     };
     console.log("manaCost:", manaCost, typeof manaCost);
 
+    const symbols = [];
+    for (let i = 0; i < manaCost.length; i++) {
+        let symbol = manaCost[i];
 
-    // Convert manaCost string into individual symbols and map them to CSS classes
-    const symbols = manaCost.map((symbol, index) => {
-        const cssClass = symbolMap[symbol];
-        if (!cssClass) {
-            console.warn(`Unknown mana symbol: ${symbol}`); // Handle unexpected symbols
-            return null;
+        // Check if the current symbol is followed by a slash (hybrid mana symbol)
+        if (manaCost[i + 1] === '/' && manaCost[i + 2]) {
+            symbol = `${manaCost[i]}${manaCost[i + 2]}`; // Combine like "U/R"
+            i += 2; // Skip the next two characters (slash + second part of hybrid symbol)
         }
 
-        return <div key={index} className={`mana ${cssClass}`} />;
-    });
+        // Map the symbol to the corresponding CSS class
+        const cssClass = symbolMap[symbol.replace('/', '')]; // Remove slash for mapping
+        if (!cssClass) {
+            console.warn(`Unknown mana symbol: ${symbol}`);
+            continue;
+        }
+
+        symbols.push(<div key={i} className={`mana ${cssClass}`} />);
+    }
 
     return <div className="mana-cost-container">{symbols}</div>;
+
 };
 
 export default ManaCostFormatter;

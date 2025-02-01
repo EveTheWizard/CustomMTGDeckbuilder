@@ -1,7 +1,7 @@
 use jsonwebtoken::errors::Error;
 use jsonwebtoken::TokenData;
 use rocket::http::Status;
-use rocket::serde::Deserialize;
+use rocket::serde::{Deserialize, Serialize};
 use rocket::serde::json::{json, Json};
 use rocket_db_pools::Connection;
 use serde_json::Value;
@@ -11,6 +11,18 @@ use crate::datamodels::deck::{AddDeckPayload, Deck, DeckCard, DeckCardWithDetail
 use crate::datamodels::users::{Claims, Token};
 use crate::db::connection::Postgres;
 use crate::utils::verify_jwt;
+
+
+#[derive(Debug, Deserialize)]
+pub struct AddCardPayload {
+    card_id: i32, // The ID of the card to add
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct SingleStringPayload {
+    data: String // The ID of the card to add
+}
+
 
 #[get("/api/decks")]
 pub async fn list_decks(
@@ -110,6 +122,7 @@ pub async fn get_single_deck(
                         cards.mana_cost AS mana_cost,
                         cards.oracle_text AS o_text,
                         cards.set_code AS set_code,
+                        cards.super_types AS super_types,
                         cards.colors AS colors
                     FROM deck_cards
                     JOIN cards ON deck_cards.card_id = cards.id
@@ -183,6 +196,7 @@ pub async fn get_single_deck(
                         cards.mana_cost AS mana_cost,
                         cards.oracle_text AS o_text,
                         cards.set_code AS set_code,
+                        cards.super_types AS super_types,
                         cards.colors AS colors
                     FROM deck_cards
                     JOIN cards ON deck_cards.card_id = cards.id
@@ -297,10 +311,71 @@ pub async fn add_deck(
     }
 }
 
-#[derive(Debug, Deserialize)]
-pub struct AddCardPayload {
-    card_id: i32, // The ID of the card to add
+#[put("/decks/<deck_id>/cards/<card_id>/move", data = "<payload>")]
+pub async fn move_card(
+    mut conn: Connection<Postgres>,
+    deck_id: i32, // Deck ID from the route
+    card_id: i32, // Deck ID from the route
+    payload: Json<SingleStringPayload>, // Card ID from the request body
+    token: Option<Token<'_>>, // JWT token for authentication
+) -> Result<Status, Status> {
+    // Acquire a database connection
+    let pg_conn = conn.acquire().await.map_err(|_| Status::InternalServerError)?;
+
+    println!("Payload: {}", payload.data);
+    // Check if the token exists
+    if let Some(token) = token {
+        // Verify the JWT token
+        match verify_jwt(token) {
+            Ok(claims) => {
+                let user_id = claims.sub; // Get user ID from JWT claims
+
+                println!("JWT verified successfully.");
+
+                // Check if the user owns the deck or the deck is public
+                let owning_deck = sqlx::query!(
+                    r#"
+                    SELECT id
+                    FROM decks
+                    WHERE id = $1 AND creator_id = $2
+                    "#,
+                    deck_id,
+                    user_id
+                )
+                    .fetch_optional(&mut *pg_conn)
+                    .await
+                    .map_err(|_| Status::InternalServerError)?;
+
+                if owning_deck.is_none() {
+                    println!("User does not own this deck.");
+                    return Err(Status::Forbidden); // User doesn't own the deck
+                }
+
+                // Check if the card exists
+                let valid_card = sqlx::query!(
+                    r#"
+                    UPDATE deck_cards
+                    SET board = $1
+                    WHERE deck_id = $2 AND card_id = $3
+                    "#,
+                    payload.data,
+                    deck_id,
+                    card_id
+                )
+                    .fetch_optional(&mut *pg_conn)
+                    .await
+                    .map_err(|_| Status::InternalServerError)?;
+
+                // Return success
+                Ok(Status::Ok)
+            }
+            Err(_) => Err(Status::Unauthorized), // Invalid token
+        }
+    } else {
+        Err(Status::Unauthorized) // No token provided
+    }
 }
+
 
 #[post("/decks/<deck_id>/addCard", data = "<payload>")]
 pub async fn add_card(
@@ -398,6 +473,80 @@ pub async fn add_card(
         }
     } else {
         Err(Status::Unauthorized) // No token provided
+    }
+}
+
+#[put("/decks/<deck_id>/image", data="<payload>")]
+pub async fn set_image(
+    mut conn: Connection<Postgres>,
+    deck_id: i32,
+    payload: Json<SingleStringPayload>, // Card ID from the request body
+    token: Option<Token<'_>>,
+) -> Result<Json<Value>, Status> {
+    let pg_conn = conn.acquire().await.map_err(|_| Status::InternalServerError)?;
+
+    if let Some(token) = token {
+        match verify_jwt(token) {
+            Ok(claims) => {
+                let user_id = claims.sub;
+
+                sqlx::query!(
+                    r#"
+                    UPDATE decks
+                    SET deck_image = $1
+                    WHERE id = $2
+                    "#,
+                    payload.data,
+                    deck_id
+                )
+                    .execute(pg_conn)
+                    .await
+                    .map_err(|_| Status::InternalServerError)?;
+
+                return Ok(Json(json!({
+                    })))
+            }
+            Err(_) => Err(Status::Unauthorized),
+        }
+    } else {
+        Err(Status::Unauthorized)
+    }
+}
+
+#[put("/decks/<deck_id>/visibility", data="<payload>")]
+pub async fn change_visibility(
+    mut conn: Connection<Postgres>,
+    deck_id: i32,
+    payload: Json<SingleStringPayload>, // Card ID from the request body
+    token: Option<Token<'_>>,
+) -> Result<Json<Value>, Status> {
+    let pg_conn = conn.acquire().await.map_err(|_| Status::InternalServerError)?;
+
+    if let Some(token) = token {
+        match verify_jwt(token) {
+            Ok(claims) => {
+                let user_id = claims.sub;
+
+                sqlx::query!(
+                    r#"
+                    UPDATE decks
+                    SET visibility = $1
+                    WHERE id = $2
+                    "#,
+                    payload.data,
+                    deck_id
+                )
+                    .execute(pg_conn)
+                    .await
+                    .map_err(|_| Status::InternalServerError)?;
+
+                return Ok(Json(json!({
+                    })))
+            }
+            Err(_) => Err(Status::Unauthorized),
+        }
+    } else {
+        Err(Status::Unauthorized)
     }
 }
 

@@ -1,6 +1,4 @@
-use rocket::serde::Deserialize;
-use rocket_db_pools::Database;
-// Use `serde` to deserialize query parameters
+use rocket::serde::{json::Json, Deserialize, Serialize};
 
 #[derive(Deserialize, FromForm, Debug)]
 pub struct CardQuery {
@@ -17,7 +15,19 @@ pub struct CardQuery {
     pub colors_superset: Option<String>,
     pub T: Option<String>,
     pub CT: Option<String>,
+    pub set_code: Option<String>,
     pub mv_exact: Option<i32>,
     pub mv_superset: Option<i32>,
-    pub mv_subset: Option<i32>
+    pub mv_subset: Option<i32>,
+    pub t_exact: Option<i32>,
+    pub t_superset: Option<i32>,
+    pub t_subset: Option<i32>,
+    pub p_exact: Option<i32>,
+    pub p_superset: Option<i32>,
+    pub p_subset: Option<i32>
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct SingleStringPayload {
+    pub data: String // The ID of the card to add
 }

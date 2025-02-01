@@ -27,6 +27,11 @@ pub async fn list_cards(mut conn: Connection<Postgres>,
             bind_params.push(format!("%{}%", name)); // Partial match
         }
 
+        if let Some(name) = &params.set_code{
+            conditions.push(format!("set_code ILIKE ${}", bind_params.len() + 1));
+            bind_params.push(format!("%{}%", name)); // Partial match
+        }
+
         if let Some( card_type) = &params.CT {
             conditions.push(format!("card_type ILIKE ${}", bind_params.len() + 1));
             bind_params.push(format!("%{}%", card_type)); // Partial match
@@ -40,6 +45,26 @@ pub async fn list_cards(mut conn: Connection<Postgres>,
         if let Some(rarity) = &params.rarity{
             conditions.push(format!("rarity = ${}", bind_params.len() + 1));
             bind_params.push(format!("{}", rarity)); // Partial match
+        }
+
+        if let Some( value) = &params.t_exact{
+            conditions.push(format!("toughness = ${}", bind_params.len() + 1));
+            bind_params.push(value.clone().to_string());
+        }
+
+        if let Some( value) = &params.p_exact{
+            conditions.push(format!("power = ${}", bind_params.len() + 1));
+            bind_params.push(value.clone().to_string());
+        }
+
+        if let Some( value) = &params.p_superset {
+            conditions.push(format!("power::INTEGER >=  ${}::INTEGER", bind_params.len() + 1));
+            bind_params.push(value.clone().to_string());
+        }
+
+        if let Some( value) = &params.p_subset {
+            conditions.push(format!("power::INTEGER <= ${}::INTEGER)", bind_params.len() + 1));
+            bind_params.push(value.clone().to_string());
         }
 
         if let Some( value) = &params.mv_exact{
@@ -59,7 +84,7 @@ pub async fn list_cards(mut conn: Connection<Postgres>,
 
         if let Some(colors_exact) = &params.colors_exact {
             // Exact match
-            conditions.push(format!("colors = ${}", bind_params.len() + 1));
+            conditions.push(format!("colors = ARRAY[${}]", bind_params.len() + 1));
             bind_params.push(colors_exact.clone());
         }
 

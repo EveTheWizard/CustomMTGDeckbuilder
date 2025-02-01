@@ -8,6 +8,7 @@ const CardsList = () => {
     const [filteredCards, setFilteredCards] = useState([]); // For filtered results
     const [selectedImage, setSelectedImage] = useState(null); // State to track the currently selected image for modal
 
+
     const images = cards.map(({ id, name, set_code }) => ({
         id,
         src: `/images/${set_code}-${id}-${name}.png`,
@@ -40,7 +41,7 @@ const CardsList = () => {
     };
 
     useEffect(() => {
-        fetch("https://mtg-api.quetzalcoatlproject.com:8000/cards")
+        fetch(`${process.env.REACT_APP_API_URL}/cards`)
             .then((res) => res.json())
             .then((data) => setCards(data))
             .catch((err) => console.error(err));
@@ -55,10 +56,10 @@ const CardsList = () => {
 
     const fetchFilteredCards = async (filters) => {
         console.log("Fetching Cards...")
-        console.log(filters)
+        //console.log(filters)
         const queryParams = new URLSearchParams(filters).toString();
         try {
-            const response = await fetch(`https://mtg-api.quetzalcoatlproject.com:8000/cards?${queryParams}`);
+            const response = await fetch(process.env.REACT_APP_API_URL+`/cards?${queryParams}`);
 
             // Check if the response is JSON
             if (!response.ok) {
@@ -86,18 +87,34 @@ const CardsList = () => {
         const terms = searchTerm.split(/\s+/);
 
         terms.forEach(term => {
+
             if (term.startsWith("colors=")) {
                 filters.colors_exact = term.slice(7); // Extract value after "colors="
             } else if (term.startsWith("colors<=")) {
                 filters.colors_subset = term.slice(8); // Extract value after "colors<="
             } else if (term.startsWith("colors>=")) {
                 filters.colors_superset = term.slice(8); // Extract value after "colors>="
+
+            } else if (term.startsWith("t>=")) {
+                filters.t_superset = term.slice(3); // Extract value after "colors>="
+            } else if (term.startsWith("t<=")) {
+                filters.t_subset = term.slice(3); // Extract value after "colors>="
+            } else if (term.startsWith("t=")) {
+                filters.t_exact = term.slice(2); // Extract value after "colors>="
+
+            } else if (term.startsWith("p>=")) {
+                filters.p_superset = term.slice(3); // Extract value after "colors>="
+            } else if (term.startsWith("p<=")) {
+                filters.p_subset = term.slice(3); // Extract value after "colors>="
+            } else if (term.startsWith("p=")) {
+                filters.p_exact = term.slice(2); // Extract value after "colors>="
+
             } else if (term.startsWith("mv>=")) {
                 filters.mv_superset = term.slice(4); // Extract value after "colors>="
             } else if (term.startsWith("mv<=")) {
                 filters.mv_subset = term.slice(4); // Extract value after "colors>="
             } else if (term.startsWith("mv=")) {
-                filters.mv_exact = term.slice(4); // Extract value after "colors>="
+                filters.mv_exact = term.slice(3); // Extract value after "colors>="
             } else if (term.includes(":")) {
                 const [key, value] = term.split(":");
                 filters[key] = value;

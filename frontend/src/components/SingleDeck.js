@@ -19,6 +19,60 @@ const SingleDeckViewer = () => {
 
     // Function to count cards by type
 
+    const toggleVisibility = async () => {
+        const newVisibility = deck.visibility === 'public' ? 'private' : 'public';
+        await fetch(`${process.env.REACT_APP_API_URL}/decks/${deckId}/visibility`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('jwt')}` // Include token if needed
+            },
+            body: JSON.stringify({ data: newVisibility })
+        });
+        setDeck(prev => ({ ...prev, visibility: newVisibility }));
+    };
+
+    const moveCard = async (cardId, currentBoard) => {
+        const newBoard = currentBoard === 'mainboard' ? 'sideboard' : 'mainboard';
+
+        await fetch(`${process.env.REACT_APP_API_URL}/decks/${deckId}/cards/${cardId}/move`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('jwt')}` // Include token if needed
+            },
+            body: JSON.stringify({ data: newBoard })
+        });
+
+        if (currentBoard === 'mainboard') {
+            // Find and remove the card from the mainboard
+            const cardToMove = mainboard.find(card => card.card_id === cardId);
+            if (cardToMove) {
+                setMainboard(prev => prev.filter(card => card.card_id !== cardId));
+                setSideboard(prev => [...prev, { ...cardToMove, board: newBoard }]);
+            }
+        } else {
+            // Find and remove the card from the sideboard
+            const cardToMove = sideboard.find(card => card.card_id === cardId);
+            if (cardToMove) {
+                setSideboard(prev => prev.filter(card => card.card_id !== cardId));
+                setMainboard(prev => [...prev, { ...cardToMove, board: newBoard }]);
+            }
+        }
+
+    };
+
+    const setDeckImage = async (cardImage) => {
+        await fetch(`${process.env.REACT_APP_API_URL}/decks/${deckId}/image`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('jwt')}` // Include token if needed
+            },
+            body: JSON.stringify({ data: cardImage })
+        });
+        setDeck(prev => ({ ...prev, deck_image: cardImage }));
+    };
 
     const handleViewClick = (imageSrc) => {
         setSelectedImage(imageSrc);
@@ -29,14 +83,13 @@ const SingleDeckViewer = () => {
         setSelectedImage(null);
     };
 
-
     // Fetch the current deck details
     useEffect(() => {
         const fetchDeck = async () => {
             try {
                 setLoading(true); // Start loading
                 const token = localStorage.getItem("jwt");
-                const response = await fetch(`https://mtg-api.quetzalcoatlproject.com:8000/api/decks/${deckId}`, {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/decks/${deckId}`, {
                     method: "GET",
                     headers: {
                         "Authorization": token ? `Bearer ${token}` : "", // Add JWT token if available
@@ -75,7 +128,7 @@ const SingleDeckViewer = () => {
 
             try {
                 const token = localStorage.getItem("jwt");
-                const response = await fetch(`https://mtg-api.quetzalcoatlproject.com:8000/cards?name=${searchTerm}`, {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/cards?name=${searchTerm}`, {
                     method: "GET",
                     headers: {
                         "Authorization": token ? `Bearer ${token}` : "", // Add JWT token
@@ -99,7 +152,7 @@ const SingleDeckViewer = () => {
     const decrementCardQuantity = async (cardId, board, increment) => {
         try {
             const token = localStorage.getItem("jwt");
-            const response = await fetch(`https://mtg-api.quetzalcoatlproject.com:8000/decks/${deckId}/cards/${cardId}/decrement`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/decks/${deckId}/cards/${cardId}/decrement`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -135,7 +188,7 @@ const SingleDeckViewer = () => {
     const incrementCardQuantity = async (cardId, board, increment) => {
         try {
             const token = localStorage.getItem("jwt");
-            const response = await fetch(`https://mtg-api.quetzalcoatlproject.com:8000/decks/${deckId}/cards/${cardId}/increment`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/decks/${deckId}/cards/${cardId}/increment`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -173,14 +226,6 @@ const SingleDeckViewer = () => {
         }
     };
 
-    /*
-    const cardsByType = deck.mainboard.reduce((acc, card) => {
-        if (!acc[card.type]) acc[card.type] = [];
-        acc[card.type].push(card);
-        return acc;
-    }, {});
-     */
-
     // Function to add a card to the deck
     const addCardToDeck = async (card) => {
         try {
@@ -188,7 +233,7 @@ const SingleDeckViewer = () => {
             console.log(card);
             setAdding(true); // Set adding state
             const token = localStorage.getItem("jwt");
-            const response = await fetch(`https://mtg-api.quetzalcoatlproject.com:8000/decks/${deckId}/addCard`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/decks/${deckId}/addCard`, {
                 method: "POST", // Use POST to add the card to the deck
                 headers: {
                     "Content-Type": "application/json",
@@ -293,7 +338,12 @@ const SingleDeckViewer = () => {
                     <div className="max-w-6xl card bg-base-100 shadow-xl">
                         {/* Deck Info */}
                         <div className="card-body">
-                            <h1 className="text-3xl font-bold text-primary">{deck.name}</h1>
+                            <div className="flex flex-row">
+                                <h1 className="text-3xl font-bold text-primary">{deck.name}</h1>
+                                <button className="ml-auto btn btn-primary" onClick={toggleVisibility}>
+                                    {deck.visibility === 'public' ? 'Make Private' : 'Make Public'}
+                                </button>
+                            </div>
                             <p className="text-base-content mt-4">{deck.description}</p>
 
                             {/* Card Search & Add Section */}
@@ -323,11 +373,22 @@ const SingleDeckViewer = () => {
                             <div className="card bg-base-200">
                                 <div className="card-body">
                                     <h2 className="text-xl font-bold text-secondary">Mainboard - {mainboardCount} Cards</h2>
-                                    <CardDisplay cards={mainboard} onIncrement={incrementCardQuantity} onDecrement={decrementCardQuantity} setImage={setSelectedImage} />
+                                    <CardDisplay cards={mainboard}
+                                                 onIncrement={incrementCardQuantity}
+                                                 onDecrement={decrementCardQuantity}
+                                                 setImage={setSelectedImage}
+                                                 setDeckImage={setDeckImage}
+                                                 moveCard={moveCard}
+                                    />
                                 </div>
                                 <div className="card-body">
                                     <h2 className="text-xl font-bold text-secondary">Sideboard - {sideboardCount} Cards</h2>
-                                    <CardDisplay cards={sideboard} onIncrement={incrementCardQuantity} onDecrement={decrementCardQuantity} setImage={setSelectedImage} />
+                                    <CardDisplay cards={sideboard}
+                                                 onIncrement={incrementCardQuantity}
+                                                 onDecrement={decrementCardQuantity}
+                                                 setImage={setSelectedImage}
+                                                 moveCard={moveCard}
+                                    />
                                 </div>
                             </div>
 
